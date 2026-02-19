@@ -1,0 +1,114 @@
+{% extends "church/auth.html" %}
+{% load static %}
+
+{% block title %}Welcome to My Church{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="position-relative text-center text-white" style="height: 90vh; background: url('{% static 'church/church.jpg' %}') center/cover no-repeat;">
+    <div class="position-absolute top-0 start-0 w-100 h-100" 
+         style="background: linear-gradient(180deg, rgba(0,123,255,0.6) 0%, rgba(0,123,255,0.9) 100%);">
+    </div>
+    <div class="position-absolute top-50 start-50 translate-middle text-center px-3">
+        <img src="{% static 'church/logo.png' %}" alt="KAG Logo" width="120" class="mb-3">
+        <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInDown">Welcome to MyChurch</h1>
+        <p class="lead mb-4 animate__animated animate__fadeInUp">Connecting people through faith, prayer, and community.</p>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body">
+                        <i class="bi bi-people display-4 mb-3 text-primary"></i>
+                        <h5 class="card-title fw-bold mb-2">Join Our Community</h5>
+                        <p class="card-text">Become part of our vibrant church family and grow in faith together.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body">
+                        <i class="bi bi-book display-4 mb-3 text-success"></i>
+                        <h5 class="card-title fw-bold mb-2">Daily Devotionals</h5>
+                        <p class="card-text">Access inspiring devotionals and scripture reading guides every day.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm h-100 hover-shadow">
+                    <div class="card-body">
+                        <i class="bi bi-calendar-event display-4 mb-3 text-warning"></i>
+                        <h5 class="card-title fw-bold mb-2">Upcoming Events</h5>
+                        <p class="card-text">Stay updated with church events, prayer meetings, and community outreach.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Events Section -->
+<section class="py-5">
+    <div class="container text-center">
+        <h2 class="fw-bold mb-4">Upcoming Events</h2>
+        <div class="row g-4">
+            {% for event in events %}
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 h-100 hover-shadow">
+                    <img src="{{ event.image.url }}" class="card-img-top" alt="{{ event.name }}">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ event.name }}</h5>
+                        <p class="text-muted">{{ event.date|date:"M d, Y" }}</p>
+                        <p class="card-text">{{ event.description|truncatewords:15 }}</p>
+                        <a href="{% url 'event_detail' event.id %}" class="btn btn-primary btn-sm">Read More</a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <p class="text-muted">No upcoming events at the moment.</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Call to Action Section -->
+<section class="py-5 text-center text-white" style="background-color: #007BFF;">
+    <div class="container">
+        <h2 class="fw-bold mb-3">Ready to Grow With Us?</h2>
+        <p class="mb-4">Join our community and be part of a life-changing journey of faith.</p>
+        <a href="{% url 'register' %}" class="btn btn-light btn-lg me-2 fw-bold">Sign Up Now</a>
+        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg fw-bold">Login</a>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer class="bg-dark text-white text-center py-4">
+    <div class="container">
+        <p>&copy; {{ now.year }} MyChurch. All rights reserved.</p>
+        <div class="d-flex justify-content-center gap-3 mt-2">
+            <a href="#" class="text-white"><i class="bi bi-facebook fs-4"></i></a>
+            <a href="#" class="text-white"><i class="bi bi-twitter fs-4"></i></a>
+            <a href="#" class="text-white"><i class="bi bi-instagram fs-4"></i></a>
+        </div>
+    </div>
+</footer>
+
+<!-- Optional: Animate.css CDN for animations -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+
+<style>
+.hover-shadow:hover {
+    transform: translateY(-5px);
+    transition: 0.3s;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2) !important;
+}
+</style>
+
+{% endblock %}

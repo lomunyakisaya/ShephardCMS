@@ -1,0 +1,212 @@
+{% extends 'church/base.html' %}
+{% load static %}
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid">
+
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-4">
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow border-0 h-100 bg-success-subtle text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-people-fill"></i>
+                    <h6 class="text-uppercase small">Active Members</h6>
+                    <h2 class="fw-bold">{{ active_members }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow border-0 h-100 bg-primary-subtle text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-person-badge-fill"></i>
+                    <h6 class="text-uppercase small">Leaders</h6>
+                    <h2 class="fw-bold">{{ leaders|length }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow border-0 h-100 bg-info-subtle text-white">
+                <div class="card-body text-center">
+                    <i class="bi bi-building"></i>
+                    <h6 class="text-uppercase small">Departments</h6>
+                    <h2 class="fw-bold">{{ departments|length }}</h2>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="card shadow border-0 h-100 bg-warning-subtle text-dark">
+                <div class="card-body text-center">
+                    <i class="bi bi-calendar-check-fill"></i>
+                    <h6 class="text-uppercase small">Last Service Attendance</h6>
+                    <h2 class="fw-bold">{{ total_attendance }}</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Main Sections -->
+    <div class="row g-4">
+
+        <!-- Upcoming Events -->
+        <div class="col-lg-6">
+            <div class="card shadow border-0 h-100">
+                <div class="card-header bg-light fw-semibold">
+                    Upcoming Events
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Name</th>
+                                <th>Date</th>
+                                <th>Organizer</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for event in upcoming_events %}
+                            <tr>
+                                <td>{{ event.name }}</td>
+                                <td>{{ event.date|date:"M d, Y H:i" }}</td>
+                                <td>{{ event.created_by.first_name }} {{ event.created_by.last_name }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center py-3">No upcoming events</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Prayer Requests -->
+        <div class="col-lg-6">
+            <div class="card shadow border-0 h-100">
+                <div class="card-header bg-light fw-semibold">
+                    Prayer Requests
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Title</th>
+                                <th>Date</th>
+                                <th>Requested By</th>
+                                <th>Anonymous</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for prayer in prayerrequest %}
+                            <tr>
+                                <td>{{ prayer.title }}</td>
+                                <td>{{ prayer.date_requested|date:"M d, Y H:i" }}</td>
+                                <td>{{ prayer.requested_by }}</td>
+                                <td>{{ prayer.is_anonymous|yesno:"Yes,No" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center py-3">No prayer requests</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Announcements -->
+        <div class="col-lg-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-light fw-semibold">
+                    Announcements
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for announcement in announcements %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ announcement.title }}
+                        <span class="badge bg-primary rounded-pill">
+                            {{ announcement.posted_by }}
+                        </span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center">No announcements found</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Departments -->
+        <div class="col-lg-6">
+            <div class="card shadow border-0">
+                <div class="card-header bg-light fw-semibold">
+                    Departments
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for department in departments %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        {{ department.name }}
+                        {% if department.leader %}
+                        <span class="badge bg-success rounded-pill">
+                            {{ department.leader.first_name }} {{ department.leader.last_name }}
+                        </span>
+                        {% else %}
+                        <span class="badge bg-light text-dark">No Leader</span>
+                        {% endif %}
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item text-center">No departments found</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Last Attendance -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow border-0">
+                <div class="card-header bg-light fw-semibold">
+                    Last Service Attendance
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-striped table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Member</th>
+                                <th>Event</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for att in last_5_attendance %}
+                            <tr>
+                                <td>{{ att.member.first_name }} {{ att.member.last_name }}</td>
+                                <td>{{ att.event.name }}</td>
+                                <td>{{ att.timestamp|date:"M d, Y H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center py-3">
+                                    No attendance records found
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

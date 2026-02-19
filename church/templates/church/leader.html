@@ -1,0 +1,162 @@
+{% extends "church/base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3 class="fw-bold">Leader Panel</h3>
+    <span class="badge bg-primary px-3 py-2">
+        {{ request.user.member.department.name }}
+    </span>
+</div>
+
+<div class="row">
+
+    <!-- Department Summary -->
+    <div class="col-lg-4 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Department Overview</h5>
+
+                <p><strong>Name:</strong> {{ request.user.member.department.name }}</p>
+                <p><strong>Total Members:</strong> {{ department_members.count }}</p>
+                <p><strong>Active Members:</strong> {{ active_members_count }}</p>
+
+                <hr>
+
+                <small class="text-muted d-block">
+                    Manage your department effectively and track member engagement.
+                </small>
+            </div>
+        </div>
+    </div>
+
+    <!-- Department Members -->
+    <div class="col-lg-8 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Department Members</h5>
+
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Status</th>
+                                <th>Joined</th>
+                                <th>Phone</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for member in department_members %}
+                            <tr>
+                                <td class="text-truncate" style="max-width:150px;">
+                                    {{ member.first_name }} {{ member.last_name }}
+                                </td>
+                                <td class="text-truncate" style="max-width:200px;">
+                                    {{ member.user.email }}
+                                </td>
+                                <td>
+                                    {% if member.membership_status == "Active" %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">{{ member.membership_status }}</span>
+                                    {% endif %}
+                                </td>
+                                <td>{{ member.date_joined|date:"M Y" }}</td>
+                                <td>{{ member.phone }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">
+                                    No members found in this department.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="row">
+
+    <!-- Mark Attendance -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Mark Attendance</h5>
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label">Event</label>
+                        <select class="form-select" name="event">
+                            {% for event in upcoming_events %}
+                            <option value="{{ event.id }}">
+                                {{ event.name }} - {{ event.date|date:"M d, Y" }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col">
+                            <label class="form-label">Men</label>
+                            <input type="number" name="men" class="form-control" min="0" required>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Women</label>
+                            <input type="number" name="women" class="form-control" min="0" required>
+                        </div>
+                        <div class="col">
+                            <label class="form-label">Children</label>
+                            <input type="number" name="children" class="form-control" min="0" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary mt-3 w-100">
+                        Submit Attendance
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Post Department Notice -->
+    <div class="col-lg-6 mb-4">
+        <div class="card shadow-sm border-0 h-100">
+            <div class="card-body">
+                <h5 class="card-title mb-3">Post Department Notice</h5>
+
+                <form method="POST" action="#">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <input type="text" name="title" class="form-control" placeholder="Notice Title" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <textarea name="content" rows="4" class="form-control"
+                                  placeholder="Write your notice here..." required></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100">
+                        Publish Notice
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

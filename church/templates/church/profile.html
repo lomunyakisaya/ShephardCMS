@@ -1,0 +1,128 @@
+{% extends "church/base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <h3 class="mb-4">Edit Profile</h3>
+
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+
+    <div class="row">
+
+<!-- Profile Picture -->
+<div class="col-lg-4 mb-4">
+    <div class="card shadow-sm border-0 text-center">
+        <div class="card-body">
+
+            {% if request.user.member.profile_pic %}
+                <img id="profilePreview"
+                     src="{{ request.user.member.profile_pic.url }}"
+                     class="rounded-circle mb-3"
+                     width="120"
+                     height="120"
+                     style="object-fit: cover;"
+                     alt="Profile Pic">
+            {% else %}
+                <img id="profilePreview"
+                     src="{% static 'church/images/default_profile.png' %}"
+                     class="rounded-circle mb-3"
+                     width="120"
+                     height="120"
+                     style="object-fit: cover;"
+                     alt="Profile Pic">
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <label class="form-label">Upload New Picture</label>
+                <input type="file"
+                       name="profile_pic"
+                       class="form-control mb-2"
+                       accept="image/*"
+                       onchange="previewImage(event)">
+
+                <button type="submit"
+                        name="update_profile_pic"
+                        class="btn btn-primary w-100">
+                    Update Picture
+                </button>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+        <!-- Email, Phone, Password -->
+        <div class="col-lg-8 mb-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-body">
+
+                    <!-- Update Email & Phone -->
+                    <h5 class="card-title mb-3">Profile Information</h5>
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" name="email" id="email" 
+                                   value="{{ request.user.email }}" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">Phone</label>
+                            <input type="text" name="phone" id="phone" 
+                                   value="{{ request.user.member.phone }}" class="form-control">
+                        </div>
+
+                        <button type="submit" name="update_profile" class="btn btn-primary w-100">
+                            Update Profile
+                        </button>
+                    </form>
+
+                    <hr>
+
+                    <!-- Change Password -->
+                    <h5 class="card-title mb-3 mt-3">Change Password</h5>
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <div class="mb-3">
+                            <label for="old_password" class="form-label">Old Password</label>
+                            <input type="password" name="old_password" id="old_password" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="new_password1" class="form-label">New Password</label>
+                            <input type="password" name="new_password1" id="new_password1" class="form-control" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="new_password2" class="form-label">Confirm New Password</label>
+                            <input type="password" name="new_password2" id="new_password2" class="form-control" required>
+                        </div>
+
+                        <button type="submit" name="change_password" class="btn btn-success w-100">
+                            Change Password
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<script>
+function previewImage(event) {
+    const reader = new FileReader();
+    reader.onload = function(){
+        const output = document.getElementById('profilePreview');
+        output.src = reader.result;
+    };
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+
+{% endblock %}

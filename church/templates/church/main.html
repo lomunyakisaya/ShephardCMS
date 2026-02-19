@@ -1,0 +1,153 @@
+{% extends 'church/base.html' %}
+{% load static %}
+{% block title %}Member Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+  <!-- Welcome Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+      <h4>Hello, {{ user.username }} <i class="bi bi-hand-wave"></i></h4>
+  </div>
+
+  <div class="row">
+
+<!-- Profile Summary -->
+<div class="col-md-3 mb-3">
+  <div class="card text-center">
+    <div class="card-body">
+
+      {% if user.member.profile_pic %}
+        <img src="{{ request.user.member.profile_pic.url }}"
+             class="rounded-circle mb-2"
+             alt="Profile"
+             width="100">
+      {% else %}
+        <img src="{% static 'church/images/default_profile.png' %}"
+             class="rounded-circle mb-2"
+             alt="Profile"
+             width="100">
+      {% endif %}
+
+      <h5 class="card-title">{{ user.username }}</h5>
+      <p class="card-text">{{ user.email }}</p>
+      <a href="{% url 'edit_profile' %}" class="btn btn-sm btn-primary">Edit Profile</a>
+    </div>
+  </div>
+</div>
+
+
+    <!-- Main Content -->
+    <div class="col-md-9">
+
+      <!-- Submit Prayer Request -->
+      <div class="card mb-4">
+        <div class="card-header bg-success text-white">
+          <i class="bi bi-send me-2"></i> Submit Prayer Request
+        </div>
+        <div class="card-body">
+          <form method="POST" action="{% url 'main' %}">
+            {% csrf_token %}
+            <div class="mb-3">
+              <input type="text" 
+                     class="form-control" 
+                     name="title" 
+                     placeholder="Request Title" 
+                     required>
+            </div>
+            <div class="mb-3">
+              <textarea class="form-control" 
+                        name="description" 
+                        placeholder="Write your prayer request here..." 
+                        rows="4" 
+                        required></textarea>
+                        
+            </div>
+            <div class="mb-3 form-check">
+              <input type="checkbox" 
+                     class="form-check-input" 
+                     name="is_anonymous" 
+                     id="is_anonymous">
+              <label class="form-check-label" for="is_anonymous">
+                Submit anonymously
+              </label>
+            </div>
+            <button type="submit" class="btn btn-success">
+              Submit
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Your Prayer Requests -->
+      <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+          <i class="bi bi-chat-dots me-2"></i> My Requests
+        </div>
+        <div class="card-body">
+          {% for prayer in user_prayers %}
+            <div class="mb-3 p-3 border rounded">
+              <strong>{{ prayer.title }}</strong>
+              <p class="mb-1">
+                {{ prayer.description|truncatewords:20 }}
+              </p>
+              <span class="badge bg-secondary">
+                {{ prayer.is_answered|yesno:"Answered,Pending" }}
+              </span>
+            </div>
+          {% empty %}
+            <p class="text-muted">
+              No prayer requests submitted yet.
+            </p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Notifications -->
+      <div class="card mb-4">
+        <div class="card-header bg-warning text-dark">
+          <i class="bi bi-bell me-2"></i> Notifications
+        </div>
+        <div class="card-body">
+          {% for note in notifications %}
+            <div class="mb-3 p-3 border rounded">
+              <p class="mb-1">
+                {{ note.content|truncatewords:20 }} <span class="text-muted"><br>(from {{ note.posted_by }})</span>
+              </p>
+              <small class="text-muted">
+                {{ note.created_at|date:"M d, Y H:i" }}
+              </small>
+            </div>
+          {% empty %}
+            <p class="text-muted">
+              No notifications.
+            </p>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Resources -->
+      <div class="card mb-4">
+        <div class="card-header bg-secondary text-white">
+          <i class="bi bi-book me-2"></i> Resources
+        </div>
+        <div class="card-body">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <a href="#">Daily Devotional</a>
+            </li>
+            <li class="list-group-item">
+              <a href="#">Scripture Reading</a>
+            </li>
+            <li class="list-group-item">
+              <a href="#">Upcoming Events</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</div>
+{% endblock %}
