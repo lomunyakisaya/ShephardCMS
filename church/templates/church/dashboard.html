@@ -100,11 +100,10 @@
                                 <th>Title</th>
                                 <th>Date</th>
                                 <th>Requested By</th>
-                                <th>Anonymous</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for prayer in prayerrequest %}
+                            {% for prayer in prayer_requests %}
                             <tr>
                                 <td>{{ prayer.title }}</td>
                                 <td>{{ prayer.date_requested|date:"M d, Y H:i" }}</td>
@@ -154,8 +153,7 @@
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         {{ department.name }}
                         {% if department.leader %}
-                        <span class="badge bg-success rounded-pill">
-                            {{ department.leader.first_name }} {{ department.leader.last_name }}
+                        <span class="badge bg-success rounded-pill">{{ department.leader.name }}
                         </span>
                         {% else %}
                         <span class="badge bg-light text-dark">No Leader</span>
@@ -181,21 +179,27 @@
                     <table class="table table-striped table-hover mb-0">
                         <thead class="table-dark">
                             <tr>
-                                <th>Member</th>
-                                <th>Event</th>
-                                <th>Time</th>
+                                <th>Men</th>
+                                <th>Female</th>
+                                <th>Children</th>
+                                <th>Service</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for att in last_5_attendance %}
                             <tr>
-                                <td>{{ att.member.first_name }} {{ att.member.last_name }}</td>
-                                <td>{{ att.event.name }}</td>
-                                <td>{{ att.timestamp|date:"M d, Y H:i" }}</td>
+                                <td>{{ att.male_count }}</td>
+                                <td>{{ att.female_count }}</td>
+                                <td>{{ att.child_count }}</td>
+                                <td>
+                                     <span class="badge bg-secondary rounded-pill">
+                                    {{ att.service_type.name }} - {{ att.timestamp|date:"M d, Y" }}
+                                    </span>
+                                </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="3" class="text-center py-3">
+                                <td colspan="4" class="text-center py-3">
                                     No attendance records found
                                 </td>
                             </tr>

@@ -1,7 +1,7 @@
 # admin.py
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from .models import CustomUser, Member, Department, Expense, ExpenseCategory, Income, IncomeCategory, Attendance, Event, Notification, PrayerRequest, Announcement
+from .models import CustomUser, Member, Department, Expense, ExpenseCategory, Income, IncomeCategory, Attendance, Event, Notification, PrayerRequest, Announcement,Leader, Service 
 
 @admin.register(CustomUser)
 class CustomUserAdmin(UserAdmin):
@@ -19,4 +19,9 @@ admin.site.register(Event)
 admin.site.register(Notification)
 admin.site.register(PrayerRequest)
 admin.site.register(Announcement)
-
+admin.site.register(Leader)
+admin.site.register(Service)
+admin.site.site_header = "MyChurch Admin"
+admin.site.site_title = "MyChurch Admin Portal"
+admin.site.index_title = "Welcome to MyChurch Admin Portal"
+#admin.site.site_url = None Disable the "View Site" link in the admin header

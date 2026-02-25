@@ -57,7 +57,7 @@
             </div>
             <div class="mb-3">
               <textarea class="form-control" 
-                        name="description" 
+                        name="content" 
                         placeholder="Write your prayer request here..." 
                         rows="4" 
                         required></textarea>
@@ -112,7 +112,14 @@
           {% for note in notifications %}
             <div class="mb-3 p-3 border rounded">
               <p class="mb-1">
+                {{ note.title |truncatewords:10}}<br>
                 {{ note.content|truncatewords:20 }} <span class="text-muted"><br>(from {{ note.posted_by }})</span>
+                <span class=checkbox>
+                  <input type="checkbox" 
+                         class="form-check-input notification" 
+                         data-note-id="{{ note.id }}"
+                         {% if note.is_read %}checked{% endif %}>
+                </span>
               </p>
               <small class="text-muted">
                 {{ note.created_at|date:"M d, Y H:i" }}

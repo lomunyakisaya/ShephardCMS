@@ -6,14 +6,21 @@ from django.utils import timezone
 class CustomUser(AbstractUser): 
     phone = models.CharField(max_length=15, unique=False, null=True, blank=True)
     def __str__(self): return self.username
+class Leader(models.Model):
+    name=models.ForeignKey('Member', on_delete=models.CASCADE)
+    department=models.ForeignKey('Department', on_delete=models.CASCADE, related_name='leaders')
+    date_started = models.DateField(auto_now_add=True)
+    
+    
+    def __str__(self):
+        return f"{self.name} - {self.department}"
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    leader = models.ForeignKey('Member', on_delete=models.PROTECT, null=True, blank=True, related_name='department_leader')
-
+    leader = models.ForeignKey(Leader, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_leader')
     def __str__(self):
-        return self.name
+      return self.name
 
 class Member(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
@@ -116,19 +123,6 @@ class Event(models.Model):
     def __str__(self):
         return f"{self.name} ({self.date.date()})"
 
-class Attendance(models.Model):
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
-    member = models.ForeignKey('Member', on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now_add=True)
-    male_count = models.PositiveIntegerField(default=0)
-    female_count = models.PositiveIntegerField(default=0)
-    child_count = models.PositiveIntegerField(default=0)
-
-    def __str__(self):
-        return f"{self.member} - {self.event.name}"
-    @property
-    def total_attendance(self):
-        return self.male_count + self.female_count + self.child_count
  
 class Service(models.Model):
     name = models.CharField(choices=[
@@ -184,3 +178,16 @@ class Suggestion(models.Model):
     def __str__(self):
         return self.title
 
+class Attendance(models.Model):
+    service_type = models.ForeignKey(Service, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    male_count = models.PositiveIntegerField(default=0)
+    female_count = models.PositiveIntegerField(default=0)
+    child_count = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"{self.service_type}"
+    @property
+    def total_attendance(self):
+        return self.male_count + self.female_count + self.child_count

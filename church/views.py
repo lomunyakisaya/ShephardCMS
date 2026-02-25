@@ -2,11 +2,10 @@ from django.contrib.auth import get_user_model, authenticate, login as auth_logi
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from django.http import HttpResponseForbidden
 from django.db.models import Sum
 from django.utils import timezone
-from .models import Event, Member, Attendance, PrayerRequest, Announcement, Department, Notification
-from .forms import CustomUserUpdateForm, ProfileUpdateForm, CustomPasswordChangeForm
+from .models import Event, Leader, Member, Attendance, PrayerRequest, Announcement, Department, Notification, Service
+
 
 User = get_user_model()
 
@@ -64,7 +63,11 @@ def logout_view(request):
 
 
 def home(request):
-    return render(request, "church/home.html")
+    upcoming_events = Event.objects.filter(date__gte=timezone.now()).order_by("date")[:5]
+    context = {
+        "upcoming_events": upcoming_events
+    }
+    return render(request, "church/home.html", context)
 
 
 def home_redirect(request):
@@ -83,7 +86,7 @@ def dashboard(request):
     # Upcoming events (next 5)
     upcoming_events = Event.objects.filter(date__gte=timezone.now()).order_by("date")[:5]
 
-    # Leaders
+    # Leaders to display all our department leaders
     leaders = Member.objects.filter(is_leader=True).select_related("department")
 
     # Announcements
@@ -93,11 +96,12 @@ def dashboard(request):
     active_members = Member.objects.filter(membership_status="Active").count()
 
     # Last 5 attendance
-    last_5_attendance = Attendance.objects.select_related("member", "event").order_by("-timestamp")[:5]
+    last_5_attendance = Attendance.objects.order_by("-timestamp")[:5]
 
     # Latest 5 prayer requests
     prayer_requests = PrayerRequest.objects.filter(is_anonymous=False).order_by("-date_requested")[:5]
-
+    # Departments
+    departments = Department.objects.all()
     # Total attendance
     totals = Attendance.objects.aggregate(
         total_male=Sum("male_count"),
@@ -112,7 +116,7 @@ def dashboard(request):
         "upcoming_events": upcoming_events,
         "leaders": leaders,
         "active_members": active_members,
-        "departments": Department.objects.all(),
+        "departments": departments,
         "last_5_attendance": last_5_attendance,
         "total_attendance": total_attendance,
         "prayer_requests": prayer_requests,
@@ -163,14 +167,34 @@ def main_view(request):
 def leader_view(request):
     member = getattr(request.user, "member", None)
     if not member or not member.is_leader:
-        return HttpResponseForbidden("You do not have permission to access this page.")
+        return render(request, "church/403.html", status=403)
+    if request.method == "POST":
+        service_id = request.POST.get("service")
+        if service_id:
+            try:
+                service = Service.objects.get(id=service_id)
+                # Example: Save attendance for the selected service
+                Attendance.objects.create(
+                    department=member.department,
+                    service_type=service,
+                    male_count=request.POST.get("men", 0),
+                    female_count=request.POST.get("women", 0),
+                    child_count=request.POST.get("children", 0)
+                )
+            except Service.DoesNotExist:
+                messages.error(request, "Invalid service selected.")
 
     department = member.department
     department_members = Member.objects.filter(department=department)
+    active_members_count = Member.objects.filter(membership_status="Active").count()
+    services = Service.objects.all()
 
     return render(request, "church/leader.html", {
         "department": department,
-        "department_members": department_members
+        "department_members": department_members,
+        "active_members_count": active_members_count,
+        "services": services,
+        
     })
 
 
