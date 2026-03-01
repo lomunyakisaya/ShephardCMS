@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
     is_treasurer = models.BooleanField(default=False)
     is_dept_leader = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
-    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
+    
     
     def __str__(self):
         return self.username
@@ -39,10 +39,8 @@ class Member(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
     date_joined = models.DateField(auto_now_add=True)
     baptised = models.BooleanField(default=False)
-    is_leader = models.BooleanField(default=False, null=False, blank=False)
     profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
-
     membership_status = models.CharField(
         max_length=20,
         choices=[
@@ -52,7 +50,6 @@ class Member(models.Model):
         ],
         default='Active'
     )
-
     is_married = models.BooleanField(default=False)
 
     def __str__(self):
