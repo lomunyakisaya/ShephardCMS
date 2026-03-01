@@ -1,8 +1,12 @@
+from urllib import request
+
 from django.contrib.auth import get_user_model, authenticate, login as auth_login, logout as auth_logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.db.models import Sum
+from django.db.models import Q
 from django.utils import timezone
 from .models import Event, Leader, Member, Attendance, PrayerRequest, Announcement, Department, Notification, Service
 
@@ -69,6 +73,10 @@ def home(request):
     }
     return render(request, "church/home.html", context)
 
+#Access Denied View
+def permission_denied_view(request):
+    return render(request, "church/403.html", status=403)
+
 
 def home_redirect(request):
     if request.user.is_authenticated:
@@ -81,121 +89,35 @@ def home_redirect(request):
 # ----------------------
 @login_required
 def dashboard(request):
-    member = getattr(request.user, "member", None)
+    username = request.user.username
+    # Announcements (published only)
+    announcements = (Announcement.objects.filter(is_published=True).order_by('-date_posted')[:5])
 
-    # Upcoming events (next 5)
-    upcoming_events = Event.objects.filter(date__gte=timezone.now()).order_by("date")[:5]
+    # Department notifications (global or user's department)
+    notifications = (Notification.objects.filter(Q(department=request.user.department)).order_by('-created_at')[:5])
 
-    # Leaders to display all our department leaders
-    leaders = Member.objects.filter(is_leader=True).select_related("department")
+    # Upcoming events only
+    upcoming_events = (Event.objects.filter(date__gte=timezone.now(),is_cancelled=False,is_published=True).order_by('date')[:5])
 
-    # Announcements
-    announcements = Announcement.objects.all().order_by("-date_posted")[:5]
+    # Public prayer requests (approved & not anonymous)
+    prayer_requests = (PrayerRequest.objects.filter(is_anonymous=False,is_answered=True).order_by('-date_requested')[:5])
 
-    # Active members count
-    active_members = Member.objects.filter(membership_status="Active").count()
-
-    # Last 5 attendance
-    last_5_attendance = Attendance.objects.order_by("-timestamp")[:5]
-
-    # Latest 5 prayer requests
-    prayer_requests = PrayerRequest.objects.filter(is_anonymous=False).order_by("-date_requested")[:5]
-    # Departments
-    departments = Department.objects.all()
-    # Total attendance
-    totals = Attendance.objects.aggregate(
-        total_male=Sum("male_count"),
-        total_female=Sum("female_count"),
-        total_children=Sum("child_count")
-    )
-    total_attendance = (totals["total_male"] or 0) + (totals["total_female"] or 0) + (totals["total_children"] or 0)
 
     context = {
-        "member": member,
-        "profile_pic": member.profile_pic.url if member and member.profile_pic else None,
-        "upcoming_events": upcoming_events,
-        "leaders": leaders,
-        "active_members": active_members,
-        "departments": departments,
-        "last_5_attendance": last_5_attendance,
-        "total_attendance": total_attendance,
-        "prayer_requests": prayer_requests,
         "announcements": announcements,
+        "notifications": notifications,
+        "upcoming_events": upcoming_events,
+        "prayer_requests": prayer_requests,
+        "username" : username,
     }
 
-    return render(request, "church/dashboard.html", context)
-
-
+    return render(request, "church/main.html", context)
 # ----------------------
-# Main View (Prayer + Notifications)
+# Me View (Prayer + Notifications)
 # ----------------------
 @login_required
-def main_view(request):
-    member = getattr(request.user, "member", None)
-
-    if request.method == "POST":
-        title = request.POST.get("title")
-        content = request.POST.get("content")
-        is_anonymous = request.POST.get("is_anonymous") == "on"
-
-        if not title or not content:
-            messages.error(request, "Both title and content are required.")
-        else:
-            PrayerRequest.objects.create(
-                requested_by=request.user.username,
-                title=title,
-                description=content,
-                is_anonymous=is_anonymous
-            )
-            messages.success(request, "Prayer request submitted successfully.")
-        return redirect("main")
-
-    user_prayers = PrayerRequest.objects.filter(requested_by=request.user.username).order_by("-date_requested")
-    notifications = Notification.objects.filter(posted_by=member).order_by("-created_at") if member else []
-
-    return render(request, "church/main.html", {
-        "user_prayers": user_prayers,
-        "notifications": notifications,
-        "member": member
-    })
-
-
-# ----------------------
-# Leader Panel View
-# ----------------------
-@login_required
-def leader_view(request):
-    member = getattr(request.user, "member", None)
-    if not member or not member.is_leader:
-        return render(request, "church/403.html", status=403)
-    if request.method == "POST":
-        service_id = request.POST.get("service")
-        if service_id:
-            try:
-                service = Service.objects.get(id=service_id)
-                # Example: Save attendance for the selected service
-                Attendance.objects.create(
-                    department=member.department,
-                    service_type=service,
-                    male_count=request.POST.get("men", 0),
-                    female_count=request.POST.get("women", 0),
-                    child_count=request.POST.get("children", 0)
-                )
-            except Service.DoesNotExist:
-                messages.error(request, "Invalid service selected.")
-
-    department = member.department
-    department_members = Member.objects.filter(department=department)
-    active_members_count = Member.objects.filter(membership_status="Active").count()
-    services = Service.objects.all()
-
-    return render(request, "church/leader.html", {
-        "department": department,
-        "department_members": department_members,
-        "active_members_count": active_members_count,
-        "services": services,
-        
-    })
+def me_view(request):
+    return render(request, "church/me.html",)
 
 
 # ----------------------
@@ -259,3 +181,41 @@ def profile_edit_view(request):
         "member": member,
         "profile_pic": member.profile_pic.url if member and member.profile_pic else None
     })
+    
+# Admin view 
+@login_required
+def admin(request):
+    if not request.user.is_admin:
+        return redirect("permission_denied")
+    return render(request, "church/admin.html")
+
+#pastor view
+@login_required
+def pastor_view(request):
+    if not request.user.is_pastor:
+        return redirect("permission_denied")
+    return render(request, "church/pastor.html")
+
+
+#church admin view
+@login_required
+def church_admin_view(request):
+    if not request.user.is_church_admin:
+        return redirect("permission_denied")
+    return render(request, "church/church_admin.html")
+
+
+#treasurer view
+@login_required
+def treasurer_view(request):
+    if not request.user.is_treasurer:
+        return redirect("permission_denied")
+    return render(request, "church/treasurer.html")
+
+
+#leader view
+@login_required
+def dept_leader_view(request):
+    if not request.user.is_dept_leader:
+        return redirect("permission_denied")
+    return render(request, "church/dept_leader.html")

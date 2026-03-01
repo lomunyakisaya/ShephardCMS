@@ -5,7 +5,16 @@ from django.utils import timezone
 
 class CustomUser(AbstractUser): 
     phone = models.CharField(max_length=15, unique=False, null=True, blank=True)
-    def __str__(self): return self.username
+    is_pastor = models.BooleanField(default=False)
+    is_church_admin = models.BooleanField(default=False)
+    is_treasurer = models.BooleanField(default=False)
+    is_dept_leader = models.BooleanField(default=False)
+    is_admin = models.BooleanField(default=False)
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    def __str__(self):
+        return self.username
+
 class Leader(models.Model):
     name=models.ForeignKey('Member', on_delete=models.CASCADE)
     department=models.ForeignKey('Department', on_delete=models.CASCADE, related_name='leaders')
@@ -33,7 +42,6 @@ class Member(models.Model):
     baptised = models.BooleanField(default=False)
     is_leader = models.BooleanField(default=False, null=False, blank=False)
     profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
 
     membership_status = models.CharField(
@@ -118,10 +126,12 @@ class Event(models.Model):
     date = models.DateTimeField()
     description = models.TextField(blank=True)
     created_by = models.ForeignKey('Member', on_delete=models.CASCADE, null=False, blank=False)
+    is_cancelled = models.BooleanField(default=False)
+    is_published = models.BooleanField(default=False)
     
 
     def __str__(self):
-        return f"{self.name} ({self.date.date()})"
+        return f"{self.name} ({self.date.date()}) - {'Published' if self.is_published else 'Unpublished'}"
 
  
 class Service(models.Model):
@@ -143,6 +153,7 @@ class Announcement(models.Model):
     content = models.TextField()
     date_posted = models.DateTimeField(auto_now_add=True)
     posted_by = models.ForeignKey('Member', on_delete=models.CASCADE, null=False)
+    is_published = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title   
@@ -163,6 +174,8 @@ class Notification(models.Model):
         content = models.TextField(blank=False, null=False)
         posted_by = models.ForeignKey('Member', on_delete=models.CASCADE, null=False)
         created_at = models.DateTimeField(auto_now_add=True)
+        department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
+           
     
         def __str__(self):
             return f"Notification for {self.title} at {self.created_at}"
@@ -191,3 +204,4 @@ class Attendance(models.Model):
     @property
     def total_attendance(self):
         return self.male_count + self.female_count + self.child_count
+
