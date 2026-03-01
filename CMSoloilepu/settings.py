@@ -29,7 +29,7 @@ AUTH_USER_MODEL = 'church.CustomUser'
 SECRET_KEY = os.environ.get('SECRET_KEY') 
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'https://railway.up.app']
