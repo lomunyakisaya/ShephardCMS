@@ -27,7 +27,6 @@ class Leader(models.Model):
 class Department(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    leader = models.ForeignKey(Leader, on_delete=models.SET_NULL, null=True, blank=True, related_name='department_leader')
     def __str__(self):
       return self.name
 
