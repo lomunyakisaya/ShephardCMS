@@ -83,16 +83,15 @@ WSGI_APPLICATION = 'CMSoloilepu.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',  # Use MySQL
-        'NAME': os.environ.get('DB_NAME'),        # Your database name
-        'USER': os.environ.get('DB_USER'),               # Your MySQL username
-        'PASSWORD': os.environ.get('DB_PASSWORD'),           # Your MySQL password
-        'HOST': os.environ.get('DB_HOST'),                   # Usually 'localhost' or your server IP
-        'PORT': os.environ.get('DB_PORT'),                        # Default MySQL port
+    "default": {
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": os.getenv("MYSQLDATABASE", ""),
+        "USER": os.getenv("MYSQLUSER", ""),
+        "PASSWORD": os.getenv("MYSQLPASSWORD", ""),
+        "HOST": os.getenv("MYSQLHOST", ""),
+        "PORT": os.getenv("MYSQLPORT", "3306"),
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
