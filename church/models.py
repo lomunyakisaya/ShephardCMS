@@ -10,6 +10,7 @@ class CustomUser(AbstractUser):
     is_treasurer = models.BooleanField(default=False)
     is_dept_leader = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
+    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
     
     
     def __str__(self):
