@@ -32,7 +32,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 DEBUG = False
 
 ALLOWED_HOSTS = ['*']
-CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'https://railway.up.app']
+CSRF_TRUSTED_ORIGINS = ['http://localhost:8000', 'https://shephardcms-production.up.railway.app/']
 
 # Application definition
 
