@@ -137,7 +137,7 @@
                             {% for prayer in prayer_requests %}
                             <tr>
                                 <td class="fw-medium">{{ prayer.title }}</td>
-                                <td>{{ prayer.date_requested|date:"M d, Y H:i" }}</td>
+                                <td>{{ prayer.date_requested|date:"M d, Y " }}</td>
                                 <td>{{ prayer.requested_by }}</td>
                                 <td>
                                     <span class="badge {% if prayer.is_anonymous %}bg-secondary{% else %}bg-success{% endif %}">
