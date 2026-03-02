@@ -111,7 +111,7 @@ def dashboard(request):
         "username" : username,
     }
 
-    return render(request, "church/main.html", context)
+    return render(request, "church/dashboard.html", context)
 # ----------------------
 # Me View (Prayer + Notifications)
 # ----------------------
