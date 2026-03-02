@@ -235,3 +235,5 @@ def dept_leader_view(request):
     if not request.user.is_dept_leader:
         return redirect("permission_denied")
     return render(request, "church/dept_leader.html")
+def more_view(request):
+    return render(request, "church/more.html")

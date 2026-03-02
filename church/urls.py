@@ -15,6 +15,6 @@ urlpatterns = [
     path('treasurer/', views.treasurer_view, name='treasurer'),
     path('dept_leader/', views.dept_leader_view, name='dept_leader'),
     path('403/', views.permission_denied_view, name='permission_denied'),
-    #path('main/admin/', views.admin_view, name='admin'),
+    path('more/admin/', views.more_view, name='more'),
     
 ]
