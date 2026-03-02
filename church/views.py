@@ -99,6 +99,9 @@ def dashboard(request):
     #leaders
     leaders = Leader.objects.all().order_by('-date_started')
     
+    #last five attendance records
+    last_5_attendance = Attendance.objects.all().order_by('-date')[:5]
+    
     #departments
     departments = Department.objects.all()
        
@@ -121,6 +124,7 @@ def dashboard(request):
         "username" : username,
         "leaders": leaders,
         "departments": departments,
+        "last_5_attendance": last_5_attendance,
     }
 
     return render(request, "church/dashboard.html", context)
@@ -129,8 +133,7 @@ def dashboard(request):
 # ----------------------
 @login_required
 def me_view(request):
-    return render(request, "church/me.html",)
-
+    return render(request, "church/me.html", {"user": request.user})
 
 # ----------------------
 # Profile Edit View
