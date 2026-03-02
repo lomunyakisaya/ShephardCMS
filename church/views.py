@@ -100,7 +100,7 @@ def dashboard(request):
     leaders = Leader.objects.all().order_by('-date_started')
     
     #last five attendance records
-    last_5_attendance = Attendance.objects.all().order_by('-date')[:5]
+    last_5_attendance = Attendance.objects.all().order_by('-timestamp')[:5]
     
     #departments
     departments = Department.objects.all()
