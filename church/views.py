@@ -1,3 +1,4 @@
+from enum import member
 from urllib import request
 
 from django.contrib.auth import get_user_model, authenticate, login as auth_login, logout as auth_logout, update_session_auth_hash
@@ -128,75 +129,75 @@ def dashboard(request):
     }
 
     return render(request, "church/dashboard.html", context)
-# ----------------------
-# Me View (Prayer + Notifications)
-# ----------------------
+#profile
 @login_required
-def me_view(request):
-    return render(request, "church/me.html", {"user": request.user})
-
-# ----------------------
-# Profile Edit View
-# ----------------------
-@login_required
-def profile_edit_view(request):
+def profile_view(request):
     user = request.user
-    member, _ = Member.objects.get_or_create(user=user)
+    member, created = Member.objects.get_or_create(user=user)
 
     if request.method == "POST":
 
-        # --- Update Email & Phone ---
-        if "update_contact" in request.POST:
-            email = request.POST.get("email", "").strip()
-            phone = request.POST.get("phone", "").strip()
+        # Get form data
+        first_name = request.POST.get("first_name", "").strip()
+        last_name = request.POST.get("last_name", "").strip()
+        email = request.POST.get("email", "").strip()
+        phone = request.POST.get("phone", "").strip()
 
-            if not email:
-                messages.error(request, "Email cannot be empty.")
-            else:
-                user.email = email
-                member.phone = phone
-                user.save()
-                member.save()
-                messages.success(request, "Contact info updated successfully.")
-            return redirect("edit_profile")
+        old_password = request.POST.get("old_password")
+        new_password1 = request.POST.get("new_password1")
+        new_password2 = request.POST.get("new_password2")
 
-        # --- Update Profile Picture ---
-        elif "update_profile_pic" in request.POST:
-            profile_pic = request.FILES.get("profile_pic")
-            if profile_pic:
-                member.profile_pic = profile_pic
-                member.save()
-                messages.success(request, "Profile picture updated successfully.")
-            else:
-                messages.error(request, "Please select a picture to upload.")
-            return redirect("edit_profile")
+        # -------- Basic Info Update --------
+        if not first_name:
+            messages.error(request, "First name cannot be empty.")
+            return redirect("profile")
 
-        # --- Change Password ---
-        elif "change_password" in request.POST:
-            old_password = request.POST.get("old_password")
-            new_password1 = request.POST.get("new_password1")
-            new_password2 = request.POST.get("new_password2")
+        if not email:
+            messages.error(request, "Email cannot be empty.")
+            return redirect("profile")
+
+        user.first_name = first_name
+        user.last_name = last_name
+        user.email = email
+        member.phone = phone
+
+        user.save()
+        member.save()
+
+        # -------- Password Update (Optional) --------
+        if old_password or new_password1 or new_password2:
+
+            if not old_password:
+                messages.error(request, "Enter your old password.")
+                return redirect("profile")
 
             if not user.check_password(old_password):
                 messages.error(request, "Old password is incorrect.")
-            elif new_password1 != new_password2:
-                messages.error(request, "New passwords do not match.")
-            elif len(new_password1) < 8:
-                messages.error(request, "New password must be at least 8 characters.")
-            else:
-                user.set_password(new_password1)
-                user.save()
-                update_session_auth_hash(request, user)
-                messages.success(request, "Password changed successfully.")
-            return redirect("edit_profile")
+                return redirect("profile")
 
-    # GET request
+            if new_password1 != new_password2:
+                messages.error(request, "New passwords do not match.")
+                return redirect("profile")
+
+            if len(new_password1) < 8:
+                messages.error(request, "Password must be at least 8 characters.")
+                return redirect("profile")
+
+            user.set_password(new_password1)
+            user.save()
+
+            # Important: keeps user logged in
+            update_session_auth_hash(request, user)
+
+            messages.success(request, "Profile and password updated successfully.")
+            return redirect("profile")
+
+        messages.success(request, "Profile updated successfully.")
+        return redirect("profile")
+
     return render(request, "church/profile.html", {
-        "user": user,
         "member": member,
-        "profile_pic": member.profile_pic.url if member and member.profile_pic else None
     })
-    
 # Admin view 
 @login_required
 def admin(request):

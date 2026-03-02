@@ -1,0 +1,73 @@
+{% extends "church/base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="mb-4">My Profile</h2>
+
+    <!-- Messages -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="row">
+        <div class="col-md-4 text-center">
+            <!-- Profile Picture -->
+            {% if member.profile_pic %}
+                <img src="{{ member.profile_pic.url }}" class="img-fluid rounded-circle mb-3" alt="Profile Picture">
+            {% else %}
+                <img src="https://via.placeholder.com/150" class="img-fluid rounded-circle mb-3" alt="Profile Picture">
+            {% endif %}
+        </div>
+
+        <div class="col-md-8">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                <!-- First & Last Name -->
+                <div class="mb-3">
+                    <label for="first_name" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name" value="{{ request.user.first_name }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="last_name" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ request.user.last_name }}">
+                </div>
+
+                <!-- Email & Phone -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input type="email" class="form-control" id="email" name="email" value="{{ request.user.email }}" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" name="phone" value="{{ member.phone }}">
+                </div>
+
+                <hr>
+
+                <!-- Password Change -->
+                <h5>Change Password</h5>
+                <div class="mb-3">
+                    <label for="old_password" class="form-label">Old Password</label>
+                    <input type="password" class="form-control" id="old_password" name="old_password" placeholder="Enter old password">
+                </div>
+                <div class="mb-3">
+                    <label for="new_password1" class="form-label">New Password</label>
+                    <input type="password" class="form-control" id="new_password1" name="new_password1" placeholder="Enter new password">
+                </div>
+                <div class="mb-3">
+                    <label for="new_password2" class="form-label">Confirm New Password</label>
+                    <input type="password" class="form-control" id="new_password2" name="new_password2" placeholder="Confirm new password">
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
