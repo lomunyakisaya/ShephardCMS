@@ -111,6 +111,26 @@
                 setTimeout(() => alert.remove(), 1000); // remove after fade
             }, 2000); // show for 2 seconds
         });
+        // Hidding department leader button and url if user is not a department leader
+        {% if not user.is_dept_leader %}
+            document.querySelectorAll('.dept-leader-link').forEach(link => link.style.display = 'none');
+        {% endif %}
+        //hidding admin button and url if user is not an admin
+        {% if not user.is_admin %}
+            document.querySelectorAll('.admin-link').forEach(link => link.style.display = 'none');
+        {% endif %}
+        //hidding pastor button and url if user is not a pastor
+        {% if not user.is_pastor %}
+            document.querySelectorAll('.pastor-link').forEach(link => link.style.display = 'none');
+        {% endif %}
+         //hidding church admin button and url if user is not a church admin
+         {% if not user.is_church_admin %}
+            document.querySelectorAll('.church-admin-link').forEach(link => link.style.display = 'none');
+        {% endif %}
+         //hidding treasurer button and url if user is not a treasurer
+         {% if not user.is_treasurer %}
+            document.querySelectorAll('.treasurer-link').forEach(link => link.style.display = 'none');
+        {% endif %}
     </script>
 
     {% block extra_scripts %}{% endblock %}
