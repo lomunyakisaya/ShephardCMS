@@ -101,10 +101,7 @@ def dashboard(request):
     
     #departments
     departments = Department.objects.all()
-    
-    #last service Attendance
-    last_service = Attendance.objects.filter(service__date__lte=timezone.now()).order_by('-service__date').first()
-    
+       
     # Department notifications (global or user's department)
     notifications = (Notification.objects.filter(Q(department=request.user.department)).order_by('-created_at')[:5])
 
@@ -124,7 +121,6 @@ def dashboard(request):
         "username" : username,
         "leaders": leaders,
         "departments": departments,
-        "last_service" : last_service,
     }
 
     return render(request, "church/dashboard.html", context)
