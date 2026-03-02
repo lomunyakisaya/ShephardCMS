@@ -63,35 +63,43 @@
                     </a>
                 </li>
 
-                <li class="nav-item admin-link">
-                    <a class="nav-link" href="{% url 'admin' %}">
-                        <i class="bi bi-shield-lock"></i> Department Leader
-                    </a>
-                </li>
-
-                <li class="nav-item pastor-link">
-                    <a class="nav-link" href="{% url 'pastor' %}">
-                        <i class="bi bi-person-lines-fill"></i> Treasurer
-                    </a>
-                </li>
-
-                <li class="nav-item church-admin-link">
-                    <a class="nav-link" href="{% url 'church_admin' %}">
-                        <i class="bi bi-gear"></i> Pastor
+                <li class="nav-item dept-leader-link">
+                    <a class="nav-link" href="{% url 'dept_leader' %}">
+                        <i class="bi bi-people"></i> Department Leader
                     </a>
                 </li>
 
                 <li class="nav-item treasurer-link">
                     <a class="nav-link" href="{% url 'treasurer' %}">
-                        <i class="bi bi-currency-dollar"></i> Church Admin
+                        <i class="bi bi-currency-dollar"></i> Treasurer
                     </a>
                 </li>
 
-                <li class="nav-item dept-leader-link">
-                    <a class="nav-link" href="{% url 'dept_leader' %}">
-                        <i class="bi bi-people"></i> Admin
+                <li class="nav-item pastor-link">
+                    <a class="nav-link" href="{% url 'pastor' %}">
+                        <i class="bi bi-person-lines-fill"></i> Pastor
                     </a>
                 </li>
+                
+                <li class="nav-item church-admin-link">
+                    <a class="nav-link" href="{% url 'church_admin' %}">
+                        <i class="bi bi-gear"></i> Church Admin
+                    </a>
+                </li>
+
+                <li class="nav-item admin-link">
+                    <a class="nav-link" href="{% url 'admin' %}">
+                        <i class="bi bi-shield-lock"></i> Admin
+                    </a>
+                </li>
+
+
+
+
+
+
+
+
 
                 <li class="nav-item">
                     <a class="nav-link text-danger" href="{% url 'logout' %}">
