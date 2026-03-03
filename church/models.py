@@ -199,6 +199,6 @@ class Attendance(models.Model):
     def __str__(self):
         return f"{self.service_type}"
     @property
-    def total_attendance(self):
+    def last_attendance(self):
         return self.male_count + self.female_count + self.child_count
 

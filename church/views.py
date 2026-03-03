@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
-from django.db.models import Sum
+from django.db.models import Sum, F, Q
 from django.db.models import Q
 from django.utils import timezone
 from .models import Event, Leader, Member, Attendance, PrayerRequest, Announcement, Department, Notification, Service
@@ -114,8 +114,9 @@ def dashboard(request):
 
     # Public prayer requests (approved & not anonymous)
     prayer_requests = (PrayerRequest.objects.filter(is_anonymous=False,is_answered=True).order_by('-date_requested')[:5])
-
-
+    #Last service total count for departments
+    last_attendance = Attendance.objects.order_by('-timestamp').first()
+    grant_total = last_attendance.last_attendance if last_attendance else 0
     context = {
         "active_members": active_members,
         "announcements": announcements,
@@ -126,6 +127,8 @@ def dashboard(request):
         "leaders": leaders,
         "departments": departments,
         "last_5_attendance": last_5_attendance,
+        "last_attendance": last_attendance,
+        "grant_total": grant_total,
     }
 
     return render(request, "church/dashboard.html", context)
