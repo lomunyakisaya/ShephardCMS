@@ -128,9 +128,9 @@ def dashboard(request):
         "departments": departments,
         "last_5_attendance": last_5_attendance,
         "last_attendance": last_attendance,
-        "grant_total": grant_total,
+         "grant_total": grant_total,
     }
-
+ 
     return render(request, "church/dashboard.html", context)
 #profile
 @login_required
