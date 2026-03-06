@@ -1,89 +1,27 @@
-{% extends "auth/auth.html" %}
-{% load static %}
-
-{% block title %}Welcome to Dominion  {% endblock %}
+{% extends 'auth/auth.html' %}
+{%load static%}
+{% block title %}Home{% endblock %}
 
 {% block content %}
+<div class="home-container">
+    <h1>Welcome to Our Church</h1>
+    <p>Stay connected, join events, and grow in faith.</p>
 
-<!-- Hero Section -->
-<section class="position-relative text-center text-white" style="height: 90vh; background: url('{% static 'church/church.jpg' %}') center/cover no-repeat;">
-    <div class="position-absolute top-0 start-0 w-100 h-100" 
-         style="background: rgba(0, 0, 0, 0.5); backdrop-filter: brightness(0.6);">
-    </div>
-    <div class="position-absolute top-50 start-50 translate-middle text-center px-3">
-        <h1 class="display-3 fw-bold mb-3 animate__animated animate__fadeInDown animate__delay-1s">Welcome to Dominion  </h1>
-        <p class="lead mb-4 animate__animated animate__fadeInUp animate__delay-2s">Connecting people through faith, prayer, and community.</p>
-        <a href="{% url 'register' %}" class="btn btn-primary btn-lg me-2 fw-bold animate__animated animate__fadeInUp animate__delay-3s">Join Us</a>
-        <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg fw-bold animate__animated animate__fadeInUp animate__delay-3s">Login</a>
-    </div>
-</section>
-
-<!-- Features Section -->
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="row g-4 text-center">
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm h-100 hover-shadow">
-                    <div class="card-body">
-                        <i class="bi bi-people-fill display-4 mb-3 text-primary"></i>
-                        <h5 class="card-title fw-bold mb-2">Join Our Community</h5>
-                        <p class="card-text">Become part of our vibrant church family and grow in faith together.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm h-100 hover-shadow">
-                    <div class="card-body">
-                        <i class="bi bi-book-fill display-4 mb-3 text-success"></i>
-                        <h5 class="card-title fw-bold mb-2">Daily Devotionals</h5>
-                        <p class="card-text">Access inspiring devotionals and scripture reading guides every day.</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm h-100 hover-shadow">
-                    <div class="card-body">
-                        <i class="bi bi-calendar-event-fill display-4 mb-3 text-warning"></i>
-                        <h5 class="card-title fw-bold mb-2">Upcoming Events</h5>
-                        <p class="card-text">Stay updated with church events, prayer meetings, and community outreach.</p>
-                    </div>
-                </div>
-            </div>
+    <div class="home-cards">
+        <div class="card">
+            <h2>Events</h2>
+            <p>Check upcoming church events.</p>
+        </div>
+        <div class="card">
+            <h2>Sermons</h2>
+            <p>Watch or listen to past sermons.</p>
+        </div>
+        <div class="card">
+            <h2>Community</h2>
+            <p>Join prayer groups and discussions.</p>
         </div>
     </div>
-</section>
-<!-- Animate.css CDN -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
 
-<style>
-.hover-shadow {
-    transform: translateY(0);
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-.hover-shadow:hover {
-    transform: translateY(-7px);
-    box-shadow: 0 15px 25px rgba(0,0,0,0.2) !important;
-}
-
-.hover-opacity:hover {
-    opacity: 0.8;
-    transition: 0.3s;
-}
-
-section h2 {
-    position: relative;
-}
-section h2::after {
-    content: "";
-    width: 60px;
-    height: 3px;
-    background-color: #7c0be6;
-    display: block;
-    margin: 10px auto 0;
-    border-radius: 2px;
-}
-</style>
-
+    <a href="{% url 'logout' %}" class="submit-btn logout-btn">Log Out</a>
+</div>
 {% endblock %}
