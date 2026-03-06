@@ -3,262 +3,320 @@
 {% block title %}Dashboard{% endblock %}
 
 {% block content %}
-<div class="container-fluid py-4">
+<div class="container-fluid py-3">
 
-    <!-- ===================== -->
-    <!-- Dashboard Header -->
-    <!-- ===================== -->
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
-            <h3 class="fw-bold mb-1">Church Dashboard</h3>
-            <p class="text-muted mb-0">Overview of activities and statistics</p>
+<!-- ================================= -->
+<!-- Header -->
+<!-- ================================= -->
+
+<div class="mb-4">
+    <h4 class="fw-semibold mb-1">Church Dashboard</h4>
+    <small class="text-muted">
+        Overview of church activities and records
+    </small>
+</div>
+
+
+<!-- ================================= -->
+<!-- KPI SUMMARY -->
+<!-- ================================= -->
+
+<div class="row g-3 mb-4">
+
+    <div class="col-lg-3 col-md-6">
+        <div class="border rounded p-3 d-flex justify-content-between align-items-center">
+            <div>
+                <div class="text-muted small">Active Members</div>
+                <h4 class="fw-semibold mb-0">{{ active_members }}</h4>
+            </div>
+            <i class="bi bi-people fs-4 text-success"></i>
         </div>
     </div>
 
-
-    <!-- ===================== -->
-    <!-- Summary Statistics -->
-    <!-- ===================== -->
-    <div class="row g-4 mb-5">
-
-        <!-- Active Members -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                    <div class="mb-2 text-success fs-3">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase small">Active Members</h6>
-                    <h2 class="fw-bold mb-0">{{ active_members }}</h2>
-                </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="border rounded p-3 d-flex justify-content-between align-items-center">
+            <div>
+                <div class="text-muted small">Leaders</div>
+                <h4 class="fw-semibold mb-0">{{ leaders|length }}</h4>
             </div>
+            <i class="bi bi-person-badge fs-4 text-primary"></i>
         </div>
-
-        <!-- Leaders -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                    <div class="mb-2 text-primary fs-3">
-                        <i class="bi bi-person-badge-fill"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase small">Leaders</h6>
-                    <h2 class="fw-bold mb-0">{{ leaders|length }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <!-- Departments -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                    <div class="mb-2 text-info fs-3">
-                        <i class="bi bi-building"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase small">Departments</h6>
-                    <h2 class="fw-bold mb-0">{{ departments|length }}</h2>
-                </div>
-            </div>
-        </div>
-
-        <!-- Last Attendance -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body text-center">
-                    <div class="mb-2 text-warning fs-3">
-                        <i class="bi bi-calendar-check-fill"></i>
-                    </div>
-                    <h6 class="text-muted text-uppercase small">Last Service Attendance</h6>
-                    <h2 class="fw-bold mb-0">{{ grant_total }}</h2>
-                </div>
-            </div>
-        </div>
-
     </div>
 
-
-    <!-- ===================== -->
-    <!-- Main Content Sections -->
-    <!-- ===================== -->
-    <div class="row g-4">
-
-        <!-- Upcoming Events -->
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white fw-semibold">
-                    Upcoming Events
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Name</th>
-                                <th>Date</th>
-                                <th>Organizer</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for event in upcoming_events %}
-                            <tr>
-                                <td class="fw-medium">{{ event.name }}</td>
-                                <td>{{ event.date|date:"M d, Y H:i" }}</td>
-                                <td>{{ event.created_by.first_name }} {{ event.created_by.last_name }}</td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="3" class="text-center text-muted py-4">
-                                    No upcoming events
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="border rounded p-3 d-flex justify-content-between align-items-center">
+            <div>
+                <div class="text-muted small">Departments</div>
+                <h4 class="fw-semibold mb-0">{{ departments|length }}</h4>
             </div>
+            <i class="bi bi-building fs-4 text-info"></i>
         </div>
-
-
-        <!-- Prayer Requests -->
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-header bg-white fw-semibold">
-                    Prayer Requests
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Title</th>
-                                <th>Date</th>
-                                <th>From</th>
-                                <th>Anonymous</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for prayer in prayer_requests %}
-                            <tr>
-                                <td class="fw-medium">{{ prayer.title }}</td>
-                                <td>{{ prayer.date_requested|date:"M d, Y " }}</td>
-                                <td>{{ prayer.requested_by }}</td>
-                                <td>
-                                    <span class="badge {% if prayer.is_anonymous %}bg-secondary{% else %}bg-success{% endif %}">
-                                        {{ prayer.is_anonymous|yesno:"Yes,No" }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-4">
-                                    No prayer requests
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-
-        <!-- Announcements -->
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white fw-semibold">
-                    Announcements
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for announcement in announcements %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span class="fw-medium">{{ announcement.title }}</span>
-                        <span class="badge bg-primary rounded-pill">
-                            {{ announcement.posted_by }}
-                        </span>
-                    </li>
-                    {% empty %}
-                    <li class="list-group-item text-center text-muted py-4">
-                        No announcements found
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-
-
-        <!-- Departments -->
-        <div class="col-lg-6">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white fw-semibold">
-                    Departments
-                </div>
-                <ul class="list-group list-group-flush">
-                    {% for department in departments %}
-                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span class="fw-medium">{{ department.name }}</span>
-                        {% if department.leader %}
-                            <span class="badge bg-success rounded-pill">
-                                {{ department.leader.first_name }}
-                            </span>
-                        {% else %}
-                            <span class="badge bg-light text-dark">
-                                No Leader
-                            </span>
-                        {% endif %}
-                    </li>
-                    {% empty %}
-                    <li class="list-group-item text-center text-muted py-4">
-                        No departments found
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        </div>
-
     </div>
 
-
-    <!-- ===================== -->
-    <!-- Attendance History -->
-    <!-- ===================== -->
-    <div class="row mt-5">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white fw-semibold">
-                    Recent Service Attendance
-                </div>
-                <div class="table-responsive">
-                    <table class="table table-striped table-hover align-middle mb-0">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Men</th>
-                                <th>Women</th>
-                                <th>Children</th>
-                                <th>Service</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for att in last_5_attendance %}
-                            <tr>
-                                <td>{{ att.male_count }}</td>
-                                <td>{{ att.female_count }}</td>
-                                <td>{{ att.child_count }}</td>
-                                <td>
-                                    <span class="badge bg-secondary rounded-pill">
-                                        {{ att.service_type.name }} – {{ att.timestamp|date:"M d, Y" }}
-                                    </span>
-                                </td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center text-muted py-4">
-                                    No attendance records found
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+    <div class="col-lg-3 col-md-6">
+        <div class="border rounded p-3 d-flex justify-content-between align-items-center">
+            <div>
+                <div class="text-muted small">Last Service Attendance</div>
+                <h4 class="fw-semibold mb-0">{{ grant_total }}</h4>
             </div>
+            <i class="bi bi-calendar-check fs-4 text-warning"></i>
         </div>
     </div>
 
 </div>
+
+
+<!-- ================================= -->
+<!-- MAIN DASHBOARD AREA -->
+<!-- ================================= -->
+
+<div class="row g-4">
+
+<!-- LEFT COLUMN -->
+<div class="col-lg-7">
+
+<!-- Upcoming Events -->
+
+<div class="card border-0 shadow-sm mb-4">
+<div class="card-header bg-white fw-semibold">
+Upcoming Events
+</div>
+
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+
+<thead class="table-light">
+<tr>
+<th>Name</th>
+<th>Date</th>
+<th>Organizer</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for event in upcoming_events %}
+<tr>
+<td class="fw-medium">{{ event.name }}</td>
+<td>{{ event.date|date:"M d, Y H:i" }}</td>
+<td>{{ event.created_by.first_name }} {{ event.created_by.last_name }}</td>
+</tr>
+{% empty %}
+
+<tr>
+<td colspan="3" class="text-center text-muted py-3">
+No upcoming events
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+</table>
+</div>
+
+</div>
+
+
+<!-- Attendance -->
+
+<div class="card border-0 shadow-sm">
+<div class="card-header bg-white fw-semibold">
+Recent Service Attendance
+</div>
+
+<div class="table-responsive">
+<table class="table table-striped align-middle mb-0">
+
+<thead class="table-light">
+<tr>
+<th>Men</th>
+<th>Women</th>
+<th>Children</th>
+<th>Service</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for att in last_5_attendance %}
+
+<tr>
+<td>{{ att.male_count }}</td>
+<td>{{ att.female_count }}</td>
+<td>{{ att.child_count }}</td>
+
+<td>
+<span class="badge bg-secondary">
+{{ att.service_type.name }} – {{ att.timestamp|date:"M d, Y" }}
+</span>
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="4" class="text-center text-muted py-3">
+No attendance records
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+</div>
+</div>
+
+</div>
+
+
+
+<!-- RIGHT COLUMN -->
+<div class="col-lg-5">
+
+<!-- Prayer Requests -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+<div class="card-header bg-white fw-semibold">
+Prayer Requests
+</div>
+
+<div class="table-responsive">
+
+<table class="table table-hover align-middle mb-0">
+
+<thead class="table-light">
+<tr>
+<th>Title</th>
+<th>Date</th>
+<th>Anonymous</th>
+</tr>
+</thead>
+
+<tbody>
+
+{% for prayer in prayer_requests %}
+
+<tr>
+<td>{{ prayer.title }}</td>
+
+<td>{{ prayer.date_requested|date:"M d, Y" }}</td>
+
+<td>
+
+<span class="badge {% if prayer.is_anonymous %}bg-secondary{% else %}bg-success{% endif %}">
+{{ prayer.is_anonymous|yesno:"Yes,No" }}
+</span>
+
+</td>
+
+</tr>
+
+{% empty %}
+
+<tr>
+<td colspan="3" class="text-center text-muted py-3">
+No prayer requests
+</td>
+</tr>
+
+{% endfor %}
+
+</tbody>
+</table>
+
+</div>
+</div>
+
+
+
+<!-- Departments -->
+
+<div class="card border-0 shadow-sm mb-4">
+
+<div class="card-header bg-white fw-semibold">
+Departments
+</div>
+
+<ul class="list-group list-group-flush">
+
+{% for department in departments %}
+
+<li class="list-group-item d-flex justify-content-between align-items-center">
+
+<span>{{ department.name }}</span>
+
+{% if department.leader %}
+
+<span class="badge bg-success">
+{{ department.leader.first_name }}
+</span>
+
+{% else %}
+
+<span class="badge bg-light text-dark">
+No Leader
+</span>
+
+{% endif %}
+
+</li>
+
+{% empty %}
+
+<li class="list-group-item text-center text-muted">
+No departments found
+</li>
+
+{% endfor %}
+
+</ul>
+</div>
+
+
+
+<!-- Announcements -->
+
+<div class="card border-0 shadow-sm">
+
+<div class="card-header bg-white fw-semibold">
+Announcements
+</div>
+
+<ul class="list-group list-group-flush">
+
+{% for announcement in announcements %}
+
+<li class="list-group-item d-flex justify-content-between">
+
+<span>{{ announcement.title }}</span>
+
+<span class="badge bg-primary">
+{{ announcement.posted_by }}
+</span>
+
+</li>
+
+{% empty %}
+
+<li class="list-group-item text-center text-muted">
+No announcements
+</li>
+
+{% endfor %}
+
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
 {% endblock %}

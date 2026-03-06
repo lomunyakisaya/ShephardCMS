@@ -17,15 +17,15 @@ def register_view(request):
         #if not all fields
         if not all([username, email, password, password2]):
             messages.error(request, "All fields are required")
-            return redirect( 'signup' )
-        #if username exist
-        if CustomUser.objects.filter(username=username).exists():
-            messages.error(request, "Username already exist")
-            return redirect('signup')
+            return redirect( 'register' )
+        #if username or email exist 
+        if CustomUser.objects.filter(username=username, email=email).exists():
+            messages.error(request, "Username or Email already exist")
+            return redirect('register')
         #if passwords do not match
         if password != password2:
             messages.error(request, "Password do not match")
-            return redirect('signup')
+            return redirect('register')
         #then create user
         user = CustomUser.objects.create_user(username=username,password=password, email=email)
         messages.success(request, "Account Created Successfully")

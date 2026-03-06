@@ -1,12 +1,10 @@
 {% extends 'auth/auth.html' %}
 {%load static%}
 {% block title %}Log In{% endblock %}
-
 {% block content %}
 <div class="auth-card church-card">
     <h1>Welcome Back</h1>
     <p>Log in to access your account and church resources.</p>
-
     <form method="post" id="loginForm" onsubmit="handleLogin(event)">
         {% csrf_token %}
         <div class="input-group">
@@ -18,19 +16,15 @@
         </div>
         <button type="submit" class="submit-btn">Log In</button>
     </form>
-
     <p class="toggle-auth">
         New here? 
         <a href="{% url 'register' %}" class="link-btn">Sign up</a>
     </p>
 </div>
 <script>
-
     function togglePassword(inputId, btn) {
     const input = document.getElementById(inputId);
     input.type = input.type === "password" ? "text" : "password";
     btn.textContent = input.type === "password" ? "Show" : "Hide";
 }
-
-</script>
 {% endblock %}
