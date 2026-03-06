@@ -1,20 +1,4 @@
 from django.db import models 
-from django.contrib.auth.models import AbstractUser
-from django.utils import timezone
-
-class CustomUser(AbstractUser): 
-    phone = models.CharField(max_length=15, unique=False, null=True, blank=True)
-    is_pastor = models.BooleanField(default=False)
-    is_church_admin = models.BooleanField(default=False)
-    is_treasurer = models.BooleanField(default=False)
-    is_dept_leader = models.BooleanField(default=False)
-    is_admin = models.BooleanField(default=False)
-    department = models.ForeignKey('Department', on_delete=models.SET_NULL, null=True, blank=True)
-    
-    
-    def __str__(self):
-        return self.username
-
 class Leader(models.Model):
     name=models.ForeignKey('Member', on_delete=models.CASCADE)
     department=models.ForeignKey('Department', on_delete=models.CASCADE, related_name='leaders')
@@ -31,7 +15,7 @@ class Department(models.Model):
       return self.name
 
 class Member(models.Model):
-    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField('Auth.CustomUser', on_delete=models.CASCADE)
     phone = models.CharField(max_length=15, null=False, blank=False)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
