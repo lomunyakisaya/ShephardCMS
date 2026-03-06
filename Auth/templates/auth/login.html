@@ -24,4 +24,13 @@
         <a href="{% url 'register' %}" class="link-btn">Sign up</a>
     </p>
 </div>
+<script>
+
+    function togglePassword(inputId, btn) {
+    const input = document.getElementById(inputId);
+    input.type = input.type === "password" ? "text" : "password";
+    btn.textContent = input.type === "password" ? "Show" : "Hide";
+}
+
+</script>
 {% endblock %}
