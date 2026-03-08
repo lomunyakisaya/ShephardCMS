@@ -1,12 +1,10 @@
 {% extends 'auth/auth.html' %}
 {%load static%}
 {% block title %}Home{% endblock %}
-
 {% block content %}
 <div class="home-container">
     <h1>Welcome to Our Church</h1>
-    <p>Stay connected, join events, and grow in faith.</p>
-
+    <p>Log in to stay connected, join events, and grow in faith.</p>
     <div class="home-cards">
         <div class="card">
             <h2>Events</h2>
@@ -21,7 +19,6 @@
             <p>Join prayer groups and discussions.</p>
         </div>
     </div>
-
     <a href="{% url 'login' %}" class="submit-btn login-btn">Log In</a>
 </div>
 {% endblock %}

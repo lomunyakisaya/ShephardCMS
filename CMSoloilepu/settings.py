@@ -90,22 +90,26 @@ WSGI_APPLICATION = 'CMSoloilepu.wsgi.application'
 import os
 import dj_database_url
 
+import os
+import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv("secret.env")
+
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
 if DATABASE_URL:
-    # Railway (uses DATABASE_URL automatically)
     DATABASES = {
-        "default": dj_database_url.parse(DATABASE_URL)
+        "default": dj_database_url.parse(DATABASE_URL, conn_max_age=600)
     }
 else:
-    # Local development (fallback)
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.mysql",
             "NAME": os.environ.get("DB_NAME", "local_db"),
             "USER": os.environ.get("DB_USER", "root"),
             "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-            "HOST": os.environ.get("DB_HOST"),
+            "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
             "PORT": os.environ.get("DB_PORT", "3306"),
         }
     }

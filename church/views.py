@@ -1,15 +1,12 @@
 from enum import member
 from urllib import request
-
 from django.contrib.auth import get_user_model, authenticate, login as auth_login, logout as auth_logout, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.db.models import Sum, F, Q
-from django.db.models import Q
 from django.utils import timezone
-from .models import Event, Leader, Member, Attendance, PrayerRequest, Announcement, Department, Notification, Service
+from .models import Event, Leader, Member, Attendance, PrayerRequest, Announcement, Department, Notification, Service,  Income, Expense
 
 
 # ----------------------
@@ -153,10 +150,20 @@ def church_admin_view(request):
 
 #treasurer view
 @login_required
-def treasurer_view(request):
-    if not request.user.is_treasurer:
-        return redirect("permission_denied")
-    return render(request, "church/treasurer.html")
+def finance_view(request):
+   
+    total_income = Income.objects.filter(status="Approved").aggregate(Sum('amount'))['amount__sum'] or 0
+
+    total_expense = Expense.objects.filter(status="Approved").aggregate(Sum('amount'))['amount__sum'] or 0
+
+    balance = total_income - total_expense
+
+    context = {
+        "income": total_income,
+        "expense": total_expense,
+        "balance": balance
+    }
+    return render(request,"church/finance.html",context)
 
 
 #leader view
