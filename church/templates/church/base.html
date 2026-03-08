@@ -36,7 +36,7 @@
 
 <li class="nav-item">
 <a class="nav-link" href="{% url 'dashboard' %}">
-<i class="bi bi-speedometer2"></i> Dashboard
+<i class="bi bi-speedometer2"></i> Home
 </a>
 </li>
 
@@ -73,7 +73,7 @@
 {% if user.is_church_admin %}
 <li class="nav-item">
 <a class="nav-link" href="{% url 'church_admin' %}">
-<i class="bi bi-gear"></i> Church Admin
+<i class="bi bi-gear"></i> C Admin
 </a>
 </li>
 {% endif %}
@@ -81,7 +81,7 @@
 {% if user.is_admin %}
 <li class="nav-item">
 <a class="nav-link" href="{% url 'admin:index' %}">
-<i class="bi bi-shield-lock"></i> Django Admin
+<i class="bi bi-shield-lock"></i> S Admin
 </a>
 </li>
 {% endif %}

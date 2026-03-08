@@ -13,6 +13,5 @@ class CustomUser(AbstractUser):
     is_admin = models.BooleanField(default=False)
     department = models.ForeignKey('church.Department', on_delete=models.SET_NULL, null=True, blank=True)
     
-    
     def __str__(self):
         return self.username
