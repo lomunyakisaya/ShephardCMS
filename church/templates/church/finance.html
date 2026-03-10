@@ -1,10 +1,61 @@
-{% extends 'church/base.html' %}
-{% load static %}
-{% block title %}Finance{% endblock %}
-{% block content %}
-<h2>Finance Dashboard</h2>
-<div>
-    <p>Total Income: {{income}}</p>
-    <p>Total Expenses: {{expense}}</p>
-    <p>Balance: {{balance}}</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Finance Overview</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>2026-03-01</td>
+                <td>Income</td>
+                <td>$2000</td>
+            </tr>
+            <tr>
+                <td>2026-03-05</td>
+                <td>Expenditure</td>
+                <td>$500</td>
+            </tr>
+            <!-- Additional rows as needed -->
+        </tbody>
+    </table>
+</body>
+</html>
