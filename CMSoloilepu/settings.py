@@ -31,11 +31,12 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['localhost','127.0.0.1','domininionmini.up.railway.app']
-CSRF_TRUSTED_ORIGINS = ['https://localhost:8000', 'https://domininionmini.up.railway.app']
+ALLOWED_HOSTS = ['localhost','127.0.0.1','shephardcms-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://localhost:8000', 'https://shephardcms-production.up.railway.app'
+                        ]
 
 # Application definition
-
+#shephardcms-production.up.railway.app
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
