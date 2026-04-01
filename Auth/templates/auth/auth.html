@@ -1,72 +1,157 @@
-{%load static%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}Church App{% endblock %}</title>
-    <link rel="stylesheet" href="{% static 'styles.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>{% block title %}Auth{% endblock %}</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+        }
+
+        .auth-container {
+            width: 100%;
+            padding: 20px;
+        }
+
+        /* Messages */
+        .messages {
+            max-width: 400px;
+            margin: 0 auto 15px;
+        }
+
+        .message {
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            font-size: 14px;
+        }
+
+        .message.success { background: #28a745; color: white; }
+        .message.error { background: #dc3545; color: white; }
+        .message.warning { background: #ffc107; color: black; }
+
+        /* Card */
+        .auth-card {
+            max-width: 400px;
+            margin: auto;
+            padding: 30px;
+            border-radius: 15px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+            color: white;
+            text-align: center;
+        }
+
+        .auth-card h1 {
+            margin-bottom: 10px;
+        }
+
+        .auth-card p {
+            margin-bottom: 20px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.2);
+            color: white;
+            outline: none;
+        }
+
+        .input-group input::placeholder {
+            color: #ddd;
+        }
+
+        .password-group {
+            display: flex;
+        }
+
+        .password-group input {
+            flex: 1;
+        }
+
+        .toggle-password {
+            margin-left: 8px;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            background: #ff9800;
+            color: white;
+            cursor: pointer;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .submit-btn:hover {
+            opacity: 0.9;
+        }
+
+        .link-btn {
+            color: #ffd700;
+            text-decoration: none;
+        }
+
+        .link-btn:hover {
+            text-decoration: underline;
+        }
+
+        .toggle-auth {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
 </head>
-<style>
-    .message-container{
-        margin-bottom: 15px;
-    }
-    .message{
-        padding: 10px, 14px;
-        border-radius: 6px;
-        font-size: 14px;
-        margin-bottom: 10px;
-    }
-    .message.success{
-        background: #e6f4ea;
-        color: #1e7e34;
-    }
-    .message.error{
-        background: #fdecea;
-        color: #c0392b;
-    }
-    .message.warning{
-        background: #fff4e5;
-        color: #b9770b;
-    }
-    .message.info{
-        background: #e8f4fd;
-        color: #0b5ed7;
-    }
-</style>
 <body>
-   <div class="container-fluid mt-3">
 
-{% if messages %}
-{% for message in messages %}
+<div class="auth-container">
 
-<div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-
-{{ message }}
-<button class="btn-close" data-bs-dismiss="alert"></button>
-</div>
-
-{% endfor %}
-{% endif %}
-
-</div>
-    <!-- Background Image with Blur -->
-    <div class="background">
-        <img src="{% static 'church.jpeg' %}" alt="Church Background">
-    </div>
-
-    <div class="container">
-        {% block content %}{% endblock %}
-    </div>
-
-    <!-- Toast Notification -->
-    <div id="toast" class="toast">
-        <div class="toast-content">
-            <span id="toastMessage"></span>
+    {% if messages %}
+        <div class="messages">
+            {% for message in messages %}
+                <div class="message {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
         </div>
-    </div>
+    {% endif %}
 
-    <script src="{% static 'main.js' %}"></script>
+    {% block content %}{% endblock %}
+
+</div>
+
+{% block extra_js %}{% endblock %}
+
 </body>
 </html>

@@ -55,8 +55,8 @@ def logout_view(request):
 #******************************************************
 #HOME
 #******************************************************
-def home_view(request):
-    return render(request, "auth/home.html")
+#def home_view(request):
+ #   return render(request, "auth/home.html")
 #******************************************************
 #END
 #******************************************************
