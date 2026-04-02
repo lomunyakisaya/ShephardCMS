@@ -1,62 +1,498 @@
 {% extends "church/base.html" %}
+{% load static %}
+
+{% block title %}My Profile — Dominion{% endblock %}
+
+{% block page_title %}My Profile{% endblock %}
+
+{% block extra_head %}
+<style>
+  /* ── Google Font ── */
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap');
+
+  /* ── Tokens ── */
+  :root {
+    --brand:        #1a3c5e;
+    --brand-light:  #e8f0f8;
+    --brand-mid:    #2d5f8f;
+    --accent:       #c9922a;
+    --accent-soft:  #fdf3e3;
+    --surface:      #ffffff;
+    --muted:        #64748b;
+    --border:       #e2e8f0;
+    --text:         #1e293b;
+    --radius:       14px;
+    --shadow-sm:    0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+    --shadow-md:    0 4px 16px rgba(26,60,94,.10), 0 1px 4px rgba(0,0,0,.04);
+    --shadow-lg:    0 12px 40px rgba(26,60,94,.14);
+    --transition:   all .22s cubic-bezier(.4,0,.2,1);
+  }
+
+  body { font-family: 'DM Sans', sans-serif; color: var(--text); }
+
+  /* ── Page wrapper ── */
+  .profile-page {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 1rem 3rem;
+    animation: fadeUp .4s ease both;
+  }
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(16px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* ── Hero card ── */
+  .profile-hero {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-mid) 100%);
+    border-radius: var(--radius);
+    padding: 2.5rem 2rem 4.5rem;
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+  .profile-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .profile-hero-label {
+    font-size: .72rem;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    opacity: .7;
+    margin-bottom: .4rem;
+  }
+  .profile-hero h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.9rem;
+    font-weight: 400;
+    margin: 0;
+  }
+
+  /* ── Avatar block ── */
+  .avatar-block {
+    position: absolute;
+    right: 2.5rem;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+  }
+  .avatar-wrapper {
+    position: relative;
+    display: inline-block;
+  }
+  .avatar-img {
+    width: 110px;
+    height: 110px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255,255,255,.8);
+    box-shadow: 0 6px 24px rgba(0,0,0,.22);
+    display: block;
+    transition: var(--transition);
+  }
+  .avatar-img:hover { transform: scale(1.04); }
+  .avatar-upload-label {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+    background: var(--accent);
+    color: #fff;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: .78rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+    transition: var(--transition);
+  }
+  .avatar-upload-label:hover { background: #b07d1e; transform: scale(1.1); }
+  .avatar-upload-label input { display: none; }
+  .avatar-hint {
+    font-size: .68rem;
+    opacity: .6;
+    margin-top: .6rem;
+    white-space: nowrap;
+  }
+
+  /* ── Form card ── */
+  .form-card {
+    background: var(--surface);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--border);
+    margin-top: -2.5rem;
+    position: relative;
+    z-index: 2;
+    padding: 2rem 2rem 2.5rem;
+  }
+
+  /* ── Section header ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: .55rem;
+    font-size: .7rem;
+    font-weight: 700;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+    color: var(--brand);
+    margin-bottom: 1.25rem;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Field styles ── */
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  @media (max-width: 600px) { .field-row { grid-template-columns: 1fr; } }
+
+  .field-group { margin-bottom: 1.1rem; }
+  .field-group label {
+    display: block;
+    font-size: .78rem;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: .35rem;
+    letter-spacing: .02em;
+  }
+  .field-group .form-control {
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    padding: .65rem .85rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .9rem;
+    color: var(--text);
+    background: #fafbfc;
+    transition: var(--transition);
+    box-shadow: none;
+  }
+  .field-group .form-control:focus {
+    outline: none;
+    border-color: var(--brand-mid);
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(45,95,143,.12);
+  }
+
+  /* ── Divider ── */
+  .section-divider { margin: 1.8rem 0; }
+
+  /* ── Password section ── */
+  .password-section {
+    background: var(--brand-light);
+    border-radius: 10px;
+    padding: 1.4rem 1.5rem 1.5rem;
+    border: 1px solid #d1e3f5;
+  }
+
+  .input-icon-wrap {
+    position: relative;
+  }
+  .input-icon-wrap .form-control {
+    padding-right: 2.5rem;
+  }
+  .input-icon-wrap .toggle-pw {
+    position: absolute;
+    right: .75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 0;
+    font-size: .95rem;
+    line-height: 1;
+    transition: var(--transition);
+  }
+  .input-icon-wrap .toggle-pw:hover { color: var(--brand); }
+
+  /* ── Action bar ── */
+  .action-bar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: .75rem;
+    padding-top: 1.6rem;
+    border-top: 1px solid var(--border);
+    margin-top: 1.8rem;
+  }
+  .btn-cancel {
+    background: none;
+    border: 1.5px solid var(--border);
+    border-radius: 9px;
+    padding: .6rem 1.4rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .88rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    transition: var(--transition);
+  }
+  .btn-cancel:hover { border-color: #b0bec5; color: var(--text); background: #f8f9fa; }
+
+  .btn-save {
+    background: linear-gradient(135deg, var(--brand) 0%, var(--brand-mid) 100%);
+    border: none;
+    border-radius: 9px;
+    padding: .65rem 1.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .88rem;
+    font-weight: 600;
+    color: #fff;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: .45rem;
+    box-shadow: 0 3px 10px rgba(26,60,94,.25);
+    transition: var(--transition);
+  }
+  .btn-save:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(26,60,94,.3);
+  }
+  .btn-save:active { transform: translateY(0); }
+
+  /* ── Required dot ── */
+  .req { color: #e53e3e; margin-left: 2px; }
+  /* ── Django Messages ── */
+.messages-wrapper {
+  margin-bottom: 1.2rem;
+}
+
+.alert-message {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .75rem 1rem;
+  border-radius: 10px;
+  font-size: .85rem;
+  margin-bottom: .6rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid transparent;
+  animation: fadeUp .3s ease;
+}
+
+.alert-message button {
+  background: none;
+  border: none;
+  font-size: 1.1rem;
+  cursor: pointer;
+  color: inherit;
+  opacity: .7;
+}
+
+.alert-message button:hover {
+  opacity: 1;
+}
+
+/* Message types */
+.alert-message.success {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
+  color: #065f46;
+}
+
+.alert-message.error {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #7f1d1d;
+}
+
+.alert-message.warning {
+  background: #fffbeb;
+  border-color: #fde68a;
+  color: #78350f;
+}
+
+.alert-message.info {
+  background: #eff6ff;
+  border-color: #bfdbfe;
+  color: #1e3a8a;
+}
+</style>
+{% endblock %}
+
 
 {% block content %}
-<div class="container mt-5">
-    <h2 class="mb-4">My Profile</h2>
-    <div class="row">
-        <div class="col-md-4 text-center">
-            <!-- Profile Picture -->
-            {% if member.profile_pic %}
-                <img src="{{ member.profile_pic.url }}" class="img-fluid rounded-circle mb-3" alt="Profile Picture">
-            {% else %}
-                <img src="https://via.placeholder.com/150" class="img-fluid rounded-circle mb-3" alt="Profile Picture">
-            {% endif %}
-        </div>
+<div class="profile-page">
+    {% if messages %}
+  <div class="messages-wrapper">
+    {% for message in messages %}
+      <div class="alert-message {{ message.tags }}">
+        <span>{{ message }}</span>
+        <button type="button" onclick="this.parentElement.remove()">&times;</button>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
 
-        <div class="col-md-8">
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
+  <!-- Hero -->
+  <div class="profile-hero">
+    <div class="profile-hero-label">Account Settings</div>
+    <h2>My Profile</h2>
+    <p style="opacity:.65; margin:.4rem 0 0; font-size:.9rem;">
+      Manage your personal information and security
+    </p>
 
-                <!-- First & Last Name -->
-                <div class="mb-3">
-                    <label for="first_name" class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="first_name" name="first_name" value="{{ request.user.first_name }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="last_name" class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="last_name" name="last_name" value="{{ request.user.last_name }}">
-                </div>
-
-                <!-- Email & Phone -->
-                <div class="mb-3">
-                    <label for="email" class="form-label">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="{{ request.user.email }}" required>
-                </div>
-                <div class="mb-3">
-                    <label for="phone" class="form-label">Phone</label>
-                    <input type="text" class="form-control" id="phone" name="phone" value="{{ member.phone }}">
-                </div>
-
-                <hr>
-
-                <!-- Password Change -->
-                <h5>Change Password</h5>
-                <div class="mb-3">
-                    <label for="old_password" class="form-label">Old Password</label>
-                    <input type="password" class="form-control" id="old_password" name="old_password" placeholder="Enter old password">
-                </div>
-                <div class="mb-3">
-                    <label for="new_password1" class="form-label">New Password</label>
-                    <input type="password" class="form-control" id="new_password1" name="new_password1" placeholder="Enter new password">
-                </div>
-                <div class="mb-3">
-                    <label for="new_password2" class="form-label">Confirm New Password</label>
-                    <input type="password" class="form-control" id="new_password2" name="new_password2" placeholder="Confirm new password">
-                </div>
-
-                <button type="submit" class="btn btn-primary mt-3">Update Profile</button>
-            </form>
-        </div>
+    <!-- Avatar -->
+    <div class="avatar-block d-none d-md-block">
+      <div class="avatar-wrapper">
+        <img
+          id="avatar-preview"
+          src="{% if member.profile_pic %}{{ member.profile_pic.url }}{% else %}https://ui-avatars.com/api/?name={{ request.user.first_name }}+{{ request.user.last_name }}&background=1a3c5e&color=ffffff&size=200{% endif %}"
+          class="avatar-img"
+          alt="Profile picture"
+        >
+        <label class="avatar-upload-label" title="Change photo">
+          <i class="bi bi-camera-fill"></i>
+          <input type="file" id="profile-pic-input" accept="image/*" onchange="previewAvatar(event)">
+        </label>
+      </div>
+      <div class="avatar-hint">Click camera to change</div>
     </div>
+  </div>
+
+  <!-- Form card -->
+  <div class="form-card">
+    <form method="POST" enctype="multipart/form-data" id="profile-form">
+      {% csrf_token %}
+
+      <!-- Hidden file input syncs with hero upload -->
+      <input type="file" name="profile_pic" id="profile-pic-hidden" accept="image/*" style="display:none">
+
+      <!-- ── Personal Info ── -->
+      <div class="section-label">
+        <i class="bi bi-person-badge" style="font-size:.9rem;"></i>
+        Personal Information
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="first_name">First Name <span class="req">*</span></label>
+          <input type="text" class="form-control" id="first_name" name="first_name"
+                 value="{{ request.user.first_name }}" required placeholder="e.g. Mary">
+        </div>
+        <div class="field-group">
+          <label for="last_name">Last Name</label>
+          <input type="text" class="form-control" id="last_name" name="last_name"
+                 value="{{ request.user.last_name }}" placeholder="e.g. Wanjiku">
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field-group">
+          <label for="email">Email Address <span class="req">*</span></label>
+          <input type="email" class="form-control" id="email" name="email"
+                 value="{{ request.user.email }}" required placeholder="you@example.com">
+        </div>
+        <div class="field-group">
+          <label for="phone">Phone Number</label>
+          <input type="text" class="form-control" id="phone" name="phone"
+                 value="{{ member.phone }}" placeholder="+254 700 000 000">
+        </div>
+      </div>
+
+      <!-- ── Change Password ── -->
+      <div class="section-divider"></div>
+      <div class="section-label">
+        <i class="bi bi-shield-lock" style="font-size:.9rem;"></i>
+        Change Password
+      </div>
+
+      <div class="password-section">
+        <div class="field-group">
+          <label for="old_password">Current Password</label>
+          <div class="input-icon-wrap">
+            <input type="password" class="form-control" id="old_password" name="old_password"
+                   placeholder="Enter your current password">
+            <button type="button" class="toggle-pw" onclick="togglePw('old_password', this)">
+              <i class="bi bi-eye"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <div class="field-group">
+            <label for="new_password1">New Password</label>
+            <div class="input-icon-wrap">
+              <input type="password" class="form-control" id="new_password1" name="new_password1"
+                     placeholder="Choose a strong password">
+              <button type="button" class="toggle-pw" onclick="togglePw('new_password1', this)">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </div>
+          <div class="field-group">
+            <label for="new_password2">Confirm New Password</label>
+            <div class="input-icon-wrap">
+              <input type="password" class="form-control" id="new_password2" name="new_password2"
+                     placeholder="Repeat new password">
+              <button type="button" class="toggle-pw" onclick="togglePw('new_password2', this)">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <p style="font-size:.75rem; color:var(--muted); margin:-.2rem 0 0;">
+          <i class="bi bi-info-circle me-1"></i>
+          Leave password fields blank to keep your current password.
+        </p>
+      </div>
+
+      <!-- ── Action bar ── -->
+      <div class="action-bar">
+        <button type="button" class="btn-cancel" onclick="history.back()">Cancel</button>
+        <button type="submit" class="btn-save">
+          <i class="bi bi-check2-circle"></i>
+          Save Changes
+        </button>
+      </div>
+
+    </form>
+  </div>
 </div>
-{% endblock content %}
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  /* Avatar preview — syncs hero upload button to the real form input */
+  function previewAvatar(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      document.getElementById('avatar-preview').src = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+    // Transfer to the actual form input
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    document.getElementById('profile-pic-hidden').files = dt.files;
+  }
+
+  /* Toggle password visibility */
+  function togglePw(inputId, btn) {
+    const input = document.getElementById(inputId);
+    const icon  = btn.querySelector('i');
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.className = 'bi bi-eye-slash';
+    } else {
+      input.type = 'password';
+      icon.className = 'bi bi-eye';
+    }
+  }
+</script>
+{% endblock %}
