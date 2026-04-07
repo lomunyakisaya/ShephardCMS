@@ -51,7 +51,9 @@ INSTALLED_APPS = [
     
 ]
 
-
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
+SESSION_COOKIE_AGE = 900
+SESSION_SAVE_EVERY_REQUEST = True
 MIDDLEWARE = [
     
     'django.middleware.security.SecurityMiddleware',
