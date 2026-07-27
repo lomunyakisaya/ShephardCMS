@@ -9,10 +9,12 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
-import dj_database_url
 import os
-from dotenv import load_dotenv
 from pathlib import Path
+
+import dj_database_url
+from dotenv import load_dotenv
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / 'secret.env')  # Load environment variables from .env file
@@ -90,14 +92,6 @@ WSGI_APPLICATION = 'CMSoloilepu.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
-import os
-import dj_database_url
-
-import os
-import dj_database_url
-from dotenv import load_dotenv
-
-load_dotenv("secret.env")
 
 DATABASE_URL = os.environ.get("DATABASE_URL")
 
