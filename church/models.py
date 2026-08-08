@@ -1,43 +1,29 @@
-from django.db import models 
-class Leader(models.Model):
-    name=models.ForeignKey('Member', on_delete=models.CASCADE)
-    department=models.ForeignKey('Department', on_delete=models.CASCADE, related_name='leaders')
-    date_started = models.DateField(auto_now_add=True)
-    
-    
-    def __str__(self):
-        return f"{self.name} - {self.department}"
+from django.db import models
+
+from Auth.models import CustomUser
+
+
+class Leader(CustomUser):
+    class Meta:
+        proxy = True
+        app_label = 'church'
+
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
-    def __str__(self):
-      return self.name
-
-class Member(models.Model):
-    user = models.OneToOneField('Auth.CustomUser', on_delete=models.CASCADE)
-    phone = models.CharField(max_length=15, null=False, blank=False)
-    first_name = models.CharField(max_length=100)
-    last_name = models.CharField(max_length=100)
-    gender = models.CharField(max_length=10, choices=[('M', 'Male'), ('F', 'Female')])
-    date_of_birth = models.DateField(null=True, blank=True)
-    date_joined = models.DateField(auto_now_add=True)
-    baptised = models.BooleanField(default=False)
-    profile_pic = models.ImageField(upload_to='profile_pics/', null=True, blank=True)
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, null=True, blank=True)
-    membership_status = models.CharField(
-        max_length=20,
-        choices=[
-            ('Active', 'Active'),
-            ('Suspended', 'Suspended'),
-            ('Inactive', 'Inactive')
-        ],
-        default='Active'
-    )
-    is_married = models.BooleanField(default=False)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return self.name
+
+
+class Member(CustomUser):
+    class Meta:
+        proxy = True
+        app_label = 'church'
+
+    def __str__(self):
+        return f"{self.first_name} {self.last_name}".strip() or self.username
 class ExpenseCategory(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)

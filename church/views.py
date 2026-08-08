@@ -6,7 +6,7 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from django.db.models import Sum, F, Q
 from django.utils import timezone
-from .models import Event, Leader, Member, Attendance, PrayerRequest, Announcement, Department, Notification, Service,  Income, Expense
+from .models import Event, Member, Attendance, PrayerRequest, Announcement, Department, Notification, Service, Income, Expense
 
 
 # ----------------------
@@ -22,7 +22,9 @@ def dashboard(request):
     active_members = Member.objects.filter(membership_status='Active').count()
     
     #leaders
-    leaders = Leader.objects.all().order_by('-date_started')
+    leaders = Member.objects.filter(
+        Q(is_pastor=True) | Q(is_dept_leader=True) | Q(is_church_admin=True) | Q(is_admin=True)
+    ).order_by('first_name')
     
     #last five attendance records
     last_5_attendance = Attendance.objects.all().order_by('-timestamp')[:5]
@@ -60,7 +62,7 @@ def dashboard(request):
 @login_required
 def profile_view(request):
     user = request.user
-    member, created = Member.objects.get_or_create(user=user)
+    member = user
 
     if request.method == "POST":
 
